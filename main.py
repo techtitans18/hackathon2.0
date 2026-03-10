@@ -4,6 +4,8 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from app.ai_summary.ai_routes import router as ai_summary_router
 from app.emergency.emergency_routes import router as emergency_router
@@ -31,6 +33,19 @@ app = FastAPI(
     ),
     version="1.0.0",
 )
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.mount(
     "/static",

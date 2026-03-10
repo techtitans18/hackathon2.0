@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import Any
+import hashlib
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
@@ -33,7 +34,9 @@ class AdminUserUpsertRequest(BaseModel):
     role: str = Field(..., min_length=4, max_length=20)
     name: str | None = Field(default=None, max_length=120)
     health_id: str | None = Field(default=None, max_length=80)
-    hospital_id: str | None = Field(default=None, max_length=80)
+    hospital_id: str | None = Field(default=None, max_length=200)
+    hospital_name: str | None = Field(default=None, max_length=180)
+    hospital_type: str | None = Field(default=None, max_length=120)
     is_active: bool = True
 
 
@@ -86,7 +89,8 @@ def _clean_optional(value: str | None) -> str | None:
     return cleaned if cleaned else None
 
 
-def _assert_role_links(role: str, health_id: str | None, hospital_id: str | None) -> None:
+def _assert_role_links(role: str, health_id: str | None, hospital_id: str | None, hospital_name: str | None, hospital_type: str | None) -> str | None:
+    """Validate and create hospital if needed. Returns hospital_id."""
     try:
         if role == ROLE_PATIENT:
             if not health_id:
@@ -103,25 +107,42 @@ def _assert_role_links(role: str, health_id: str | None, hospital_id: str | None
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="health_id does not exist in patients.",
                 )
+            return None
 
         if role == ROLE_HOSPITAL:
-            if not hospital_id:
+            # If hospital_id looks like "name|type", create hospital
+            if hospital_id and "|" in hospital_id:
+                parts = hospital_id.split("|")
+                if len(parts) == 2:
+                    hospital_name = parts[0].strip()
+                    hospital_type = parts[1].strip()
+            
+            if not hospital_name or not hospital_type:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Hospital role requires hospital_id.",
+                    detail="Hospital role requires hospital_name and hospital_type.",
                 )
-            hospital_exists = (
-                get_hospital_collection().count_documents(
-                    {"hospital_id": hospital_id},
-                    limit=1,
-                )
-                > 0
-            )
-            if not hospital_exists:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="hospital_id does not exist in hospitals.",
-                )
+            
+            # Generate deterministic hospital_id
+            hospital_id_input = f"{hospital_name}|{hospital_type}"
+            generated_hospital_id = hashlib.sha256(hospital_id_input.encode('utf-8')).hexdigest()[:16].upper()
+            
+            # Create hospital if doesn't exist
+            hospital_collection = get_hospital_collection()
+            existing_hospital = hospital_collection.find_one({"hospital_id": generated_hospital_id})
+            
+            if not existing_hospital:
+                hospital_doc = {
+                    "hospital_id": generated_hospital_id,
+                    "hospital_name": hospital_name,
+                    "hospital_type": hospital_type,
+                    "created_at": datetime.now(timezone.utc),
+                }
+                hospital_collection.insert_one(hospital_doc)
+            
+            return generated_hospital_id
+            
+        return None
     except HTTPException:
         raise
     except DuplicateKeyError as exc:
@@ -194,6 +215,8 @@ def upsert_user(
     role = _normalize_role(payload.role)
     health_id = _clean_optional(payload.health_id)
     hospital_id = _clean_optional(payload.hospital_id)
+    hospital_name = _clean_optional(payload.hospital_name)
+    hospital_type = _clean_optional(payload.hospital_type)
 
     if role == ROLE_ADMIN:
         health_id = None
@@ -203,7 +226,10 @@ def upsert_user(
     elif role == ROLE_HOSPITAL:
         health_id = None
 
-    _assert_role_links(role, health_id, hospital_id)
+    # Validate and create hospital if needed
+    generated_hospital_id = _assert_role_links(role, health_id, hospital_id, hospital_name, hospital_type)
+    if generated_hospital_id:
+        hospital_id = generated_hospital_id
 
     now = datetime.now(timezone.utc)
     update_fields: dict[str, Any] = {

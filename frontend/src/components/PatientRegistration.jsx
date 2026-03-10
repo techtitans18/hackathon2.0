@@ -1,0 +1,244 @@
+import { useState } from 'react';
+import { patientAPI } from '../services/api';
+
+export default function PatientRegistration({ hospitalId }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    phone: '',
+    email: '',
+    dob: '',
+    blood_group: 'O+',
+    photo_url: '',
+    emergency_contact: '',
+    allergies: [],
+    diseases: [],
+    surgeries: [],
+  });
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleListInputChange = (e, field) => {
+    const { value } = e.target;
+    const items = value.split(',').map((item) => item.trim()).filter((item) => item);
+    setFormData({
+      ...formData,
+      [field]: items,
+    });
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setError('Photo size must be less than 2MB');
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload an image file');
+        return;
+      }
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result);
+        setFormData({ ...formData, photo_url: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await patientAPI.registerPatient(formData);
+      setSuccess(`Patient registered successfully. Health ID: ${response.data.HealthID}`);
+      setFormData({
+        name: '',
+        age: '',
+        phone: '',
+        email: '',
+        dob: '',
+        blood_group: 'O+',
+        photo_url: '',
+        emergency_contact: '',
+        allergies: [],
+        diseases: [],
+        surgeries: [],
+      });
+      setPhotoFile(null);
+      setPhotoPreview(null);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to register patient');
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="registration-container">
+      <h3>Register Patient</h3>
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
+
+      <form onSubmit={handleSubmit} className="registration-form">
+        <div className="form-row">
+          <div className="form-group">
+            <label>Name *</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+              placeholder="Full name"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Age *</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleInputChange}
+              required
+              min="0"
+              max="150"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Blood Group *</label>
+            <select
+              name="blood_group"
+              value={formData.blood_group}
+              onChange={handleInputChange}
+              required
+            >
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Phone *</label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              required
+              placeholder="Phone number"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Email *</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              placeholder="Email address"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Date of Birth *</label>
+            <input
+              type="date"
+              name="dob"
+              value={formData.dob}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Photo</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+            />
+            {photoPreview && (
+              <div className="photo-preview">
+                <img src={photoPreview} alt="Preview" />
+              </div>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Emergency Contact</label>
+            <input
+              type="tel"
+              name="emergency_contact"
+              value={formData.emergency_contact}
+              onChange={handleInputChange}
+              placeholder="Emergency contact phone"
+            />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Allergies (comma-separated)</label>
+          <textarea
+            value={formData.allergies.join(', ')}
+            onChange={(e) => handleListInputChange(e, 'allergies')}
+            placeholder="e.g., Penicillin, Peanuts, Shellfish"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Diseases (comma-separated)</label>
+          <textarea
+            value={formData.diseases.join(', ')}
+            onChange={(e) => handleListInputChange(e, 'diseases')}
+            placeholder="e.g., Diabetes, Hypertension"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Surgeries (comma-separated)</label>
+          <textarea
+            value={formData.surgeries.join(', ')}
+            onChange={(e) => handleListInputChange(e, 'surgeries')}
+            placeholder="e.g., Appendix, Heart Surgery"
+          />
+        </div>
+
+        <button type="submit" disabled={loading} className="btn-primary">
+          {loading ? 'Registering...' : 'Register Patient'}
+        </button>
+      </form>
+    </div>
+  );
+}

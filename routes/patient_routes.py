@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
+import hashlib
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pymongo.errors import DuplicateKeyError, PyMongoError
@@ -230,7 +231,10 @@ def register_patient(
     emergency_contact = _normalize_optional_text(payload.emergency_contact) or payload.phone
 
     now = datetime.now(timezone.utc)
-    health_id = str(uuid4())
+    # Generate deterministic HealthID using SHA256
+    # Use email as primary identifier for idempotency
+    health_id_input = f"{payload.email}|{payload.dob}"
+    health_id = hashlib.sha256(health_id_input.encode('utf-8')).hexdigest()[:16].upper()
     patient_doc = {
         "health_id": health_id,
         "name": payload.name,

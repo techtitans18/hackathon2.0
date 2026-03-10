@@ -10,6 +10,8 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, s
 from fastapi.responses import FileResponse
 from pymongo.errors import PyMongoError
 
+from blockchain.verify import verify_blockchain_integrity
+
 from app.ai_summary.summarizer import (
     SummarizerUnavailableError,
     generate_medical_summary,
@@ -110,7 +112,7 @@ async def add_record(
             detail="Hospital can only add records under its own HospitalID.",
         )
 
-    if not file.filename:
+    if not file.filename or not file.filename.strip():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Uploaded file must include a file name.",
@@ -119,6 +121,11 @@ async def add_record(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="record_type and description must be non-empty.",
+        )
+    if not HealthID.strip() or not HospitalID.strip():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="HealthID and HospitalID must be non-empty.",
         )
 
     stored_path: Path | None = None
@@ -263,7 +270,12 @@ def get_blockchain(
     _: SessionUser = Depends(require_roles(ROLE_ADMIN)),
 ) -> dict[str, object]:
     chain = healthcare_chain.get_chain()
-    return {"length": len(chain), "chain": chain}
+    integrity = verify_blockchain_integrity()
+    return {
+        "length": len(chain),
+        "chain": chain,
+        "integrity": integrity,
+    }
 
 
 @router.get("/record/hash/{record_hash}")
