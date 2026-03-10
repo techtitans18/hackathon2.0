@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Console | Healthcare Blockchain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/shared.js" defer></script>
+    <script src="/static/admin.js" defer></script>
+  </head>
+  <body class="shared-theme-bg">
+    <div class="bg-orb bg-orb-one" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-two" aria-hidden="true"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+
+    <main class="layout">
+      <header class="topbar card">
+        <div>
+          <p class="eyebrow">Admin Workspace</p>
+          <h2>Hospital + User Access Management</h2>
+        </div>
+        <div class="user-badge">
+          <img id="user-picture" alt="" />
+          <div>
+            <p id="user-name"></p>
+            <p id="user-email"></p>
+          </div>
+        </div>
+        <button id="logout-btn" type="button" class="ghost-btn">Log out</button>
+      </header>
+
+      <section class="grid">
+        <article class="card">
+          <h3>Register Hospital</h3>
+          <form id="hospital-form">
+            <label>
+              Hospital Name
+              <input name="hospital_name" required minlength="2" maxlength="180" />
+            </label>
+            <label>
+              Hospital Type
+              <input name="hospital_type" required minlength="2" maxlength="120" />
+            </label>
+            <button type="submit">Create HospitalID</button>
+          </form>
+          <pre id="hospital-output" class="output"></pre>
+        </article>
+
+        <article class="card wide">
+          <h3>Provision User Access</h3>
+          <form id="user-form">
+            <label>
+              User Email
+              <input name="email" type="email" required />
+            </label>
+            <label>
+              Role
+              <select name="role" id="role-select" required>
+                <option value="hospital">Hospital</option>
+                <option value="patient">Patient</option>
+                <option value="admin">Admin</option>
+              </select>
+            </label>
+            <label>
+              Display Name (optional)
+              <input name="name" maxlength="120" />
+            </label>
+            <label id="health-id-row" class="hidden">
+              Linked HealthID (patient role)
+              <input name="health_id" />
+            </label>
+            <label id="hospital-id-row">
+              Linked HospitalID (hospital role)
+              <input name="hospital_id" />
+            </label>
+            <label>
+              Active
+              <select name="is_active">
+                <option value="true">Enabled</option>
+                <option value="false">Disabled</option>
+              </select>
+            </label>
+            <button type="submit">Save User Access</button>
+          </form>
+          <pre id="user-output" class="output"></pre>
+        </article>
+
+        <article class="card wide">
+          <h3>Managed Users</h3>
+          <button id="load-users-btn" type="button">Load Users</button>
+          <pre id="users-list-output" class="output"></pre>
+        </article>
+      </section>
+    </main>
+
+    <aside id="status-banner" class="status hidden" aria-live="polite"></aside>
+  </body>
+</html>

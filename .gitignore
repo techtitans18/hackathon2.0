@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Local uploaded records
+records/*
+!records/.gitkeep
+
+# Local AI model artifacts
+models/ai_summary/
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

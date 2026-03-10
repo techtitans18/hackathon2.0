@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Healthcare Blockchain Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="/static/shared.js" defer></script>
+    <script src="/static/login.js" defer></script>
+  </head>
+  <body class="landing-body">
+    <div class="bg-orb bg-orb-one" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-two" aria-hidden="true"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+
+    <main class="layout landing-layout">
+      <header class="landing-nav">
+        <p class="brand-mark">Healthcare Console</p>
+        <nav class="landing-links">
+          <a href="#benefits">Benefits</a>
+          <a href="#experience">Experience</a>
+          <a href="#support">Support</a>
+          <a class="nav-btn" href="#signin">Sign In</a>
+        </nav>
+      </header>
+
+      <section class="hero-band" id="experience">
+        <article class="hero-copy">
+          <p class="eyebrow">Simple. Trusted. Healthcare-Focused.</p>
+          <h1>Healthcare Blockchain Console</h1>
+          <p class="lead">
+            A modern healthcare web experience for teams and patients to manage records quickly,
+            securely, and without unnecessary complexity.
+          </p>
+          <ul class="hero-points">
+            <li>Clear, role-based workflows for every user.</li>
+            <li>Less manual coordination across departments.</li>
+            <li>Better confidence for staff and patients.</li>
+          </ul>
+        </article>
+
+        <aside class="signin-panel" id="signin">
+          <p class="eyebrow">Secure Access</p>
+          <h2>Continue With Google</h2>
+          <p class="hint">
+            Sign in with your managed account and get redirected to your workspace automatically.
+          </p>
+          <div id="google-signin-host" class="google-host"></div>
+          <p id="auth-hint" class="hint" aria-live="polite"></p>
+        </aside>
+      </section>
+
+      <section class="benefits-band" id="benefits">
+        <h2 class="band-title">Benefits For Your Organization</h2>
+        <div class="benefit-list">
+          <article class="benefit-item">
+            <p class="benefit-kicker">Efficiency</p>
+            <h3>Faster Operations</h3>
+            <p>Reduce process friction and keep clinical teams focused on patient care.</p>
+          </article>
+          <article class="benefit-item">
+            <p class="benefit-kicker">Reliability</p>
+            <h3>Consistent User Flow</h3>
+            <p>Simple screens and predictable actions for admin, hospital, and patient users.</p>
+          </article>
+          <article class="benefit-item">
+            <p class="benefit-kicker">Confidence</p>
+            <h3>Better Patient Trust</h3>
+            <p>Give patients a transparent and dependable way to access their records.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="flow-band">
+        <h2 class="band-title">What You Get</h2>
+        <div class="flow-row">
+          <article class="flow-step">
+            <p class="step-no">01</p>
+            <p>Easy onboarding and straightforward login experience.</p>
+          </article>
+          <article class="flow-step">
+            <p class="step-no">02</p>
+            <p>Role-aware pages so each user sees the right tools.</p>
+          </article>
+          <article class="flow-step">
+            <p class="step-no">03</p>
+            <p>Cleaner status feedback to reduce errors and confusion.</p>
+          </article>
+          <article class="flow-step">
+            <p class="step-no">04</p>
+            <p>Responsive design that works well on desktop and mobile.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="support-band" id="support">
+        <h2 class="band-title">Support</h2>
+        <div class="support-columns">
+          <article>
+            <h3>Implementation Guidance</h3>
+            <p>
+              Smooth rollout support for your team with practical setup help and workflow alignment.
+            </p>
+          </article>
+          <article>
+            <h3>Ongoing Assistance</h3>
+            <p>
+              Training support, issue resolution, and continued help as your healthcare operations
+              scale.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <aside id="status-banner" class="status hidden" aria-live="polite"></aside>
+  </body>
+</html>
