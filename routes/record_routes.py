@@ -54,9 +54,31 @@ def _extract_report_text(file_content: bytes) -> str:
 
     This does not call external APIs and does not persist extracted text.
     """
+    # Try PDF extraction first
+    if file_content.startswith(b"%PDF"):
+        try:
+            from io import BytesIO
+            from PyPDF2 import PdfReader
+            
+            pdf_reader = PdfReader(BytesIO(file_content))
+            text_parts = []
+            for page in pdf_reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text_parts.append(page_text)
+            
+            if text_parts:
+                full_text = " ".join(text_parts)
+                normalized = " ".join(full_text.split())
+                return normalized[:12000]
+        except Exception:
+            pass
+    
+    # Check for binary files (non-PDF)
     if b"\x00" in file_content[:4096]:
         return ""
 
+    # Try plain text extraction
     decoded_text = ""
     for encoding in ("utf-8", "utf-16", "latin-1"):
         try:
@@ -84,7 +106,19 @@ def _build_ai_summary_source_text(
     ]
     if extracted_report_text:
         parts.append(f"Report content: {extracted_report_text}")
-    return "\n".join(parts)
+    
+    full_text = "\n".join(parts)
+    
+    # Check if content is too short for meaningful summarization
+    # BART model needs substantial text to avoid repetitive output
+    if len(full_text) < 150:
+        raise ValueError(
+            "Insufficient content for AI summarization. "
+            "Please provide detailed medical reports (at least 150 characters) "
+            "or write comprehensive clinical descriptions."
+        )
+    
+    return full_text
 
 
 @router.post(
@@ -141,13 +175,9 @@ async def add_record(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Invalid HealthID. Patient does not exist.",
             )
-        if patient.get("created_by_hospital_id") != current_user.hospital_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=(
-                    "Hospital can only add records for patients registered by the same hospital."
-                ),
-            )
+        
+        # REMOVED: Hospital restriction - Allow any hospital to add records for any patient
+        # This enables cross-hospital record management for better healthcare coordination
 
         hospital_exists = (
             get_hospital_collection().count_documents(
@@ -193,7 +223,13 @@ async def add_record(
         )
         try:
             summary_text = generate_medical_summary(ai_input_text)
-        except (ValueError, SummarizerUnavailableError) as exc:
+        except ValueError as exc:
+            # Content too short - provide helpful error message
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(exc),
+            ) from exc
+        except SummarizerUnavailableError as exc:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="Unable to summarize the uploaded report.",
@@ -267,7 +303,7 @@ async def add_record(
 
 @router.get("/blockchain")
 def get_blockchain(
-    _: SessionUser = Depends(require_roles(ROLE_ADMIN)),
+    _: SessionUser = Depends(require_roles(ROLE_ADMIN, ROLE_HOSPITAL)),
 ) -> dict[str, object]:
     chain = healthcare_chain.get_chain()
     integrity = verify_blockchain_integrity()

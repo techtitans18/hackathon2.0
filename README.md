@@ -39,6 +39,8 @@ Notes:
 - `hospital`
   - Register patients (name, phone, age, email)
   - Add medical records for patients
+  - **Patient Access (OTP)**: Verify walk-in patients via email OTP to view their records
+  - Emergency access to critical patient information
 - `patient`
   - View only their own records
   - Download only their own files
@@ -64,6 +66,8 @@ Static files are served from `/static/*`.
 - Hospital
   - `POST /register_patient`
   - `POST /add_record` (multipart/form-data)
+  - `POST /patient_access/send_otp` (send OTP for patient verification)
+  - `POST /patient_access/verify_otp` (verify OTP and access records)
 - Patient/Admin read endpoints
   - `GET /patient/{HealthID}`
   - `GET /patient/me` (patient only)
@@ -72,3 +76,33 @@ Static files are served from `/static/*`.
 - Admin-only read endpoints
   - `GET /record/hash/{record_hash}`
   - `GET /blockchain`
+
+## Features
+
+### 1. Patient Access with OTP Verification
+Hospital staff can provide secure access to patient records when patients visit:
+- **Cross-Hospital Access**: ANY hospital can access ANY patient (with OTP consent)
+- Search by Health ID, Mobile Number, or Email Address
+- Email OTP verification (6-digit, 10-minute expiry)
+- View complete patient profile and medical records from ALL hospitals
+- Download original files and AI summaries
+- See [PATIENT_ACCESS_OTP.md](PATIENT_ACCESS_OTP.md) and [CROSS_HOSPITAL_ACCESS.md](CROSS_HOSPITAL_ACCESS.md) for details
+
+### 2. AI-Powered Medical Summaries
+- Automatic summarization of uploaded medical reports (PDF/text)
+- Uses BART model (facebook/bart-large-cnn) running offline
+- Extracts text from PDFs using PyPDF2
+- Generates 30-120 word summaries
+- Stored as separate downloadable files
+
+### 3. Blockchain Integrity
+- Append-only blockchain for record metadata
+- SHA-256 hashing for file integrity
+- Verification endpoint to check chain validity
+- Tamper-proof audit trail
+
+### 4. Emergency Access
+- Quick patient lookup by Health ID, Phone, or Name+DOB
+- Critical information display (allergies, diseases, surgeries)
+- Blockchain verification status
+- Access logging for audit compliance

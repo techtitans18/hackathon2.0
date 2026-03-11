@@ -1,0 +1,50 @@
+MEDICAL REPORT - KIDNEY STONE DIAGNOSIS
+
+Patient Information:
+Date of Examination: January 15, 2024
+Chief Complaint: Severe right flank pain with hematuria
+
+Clinical History:
+The patient presented to the emergency department with acute onset of severe right-sided flank pain radiating to the groin. The pain started approximately 6 hours prior to presentation and has been progressively worsening. Associated symptoms include nausea, vomiting, and visible blood in urine. Patient reports similar episode 2 years ago which resolved spontaneously.
+
+Physical Examination:
+Vital signs stable. Temperature 37.2°C, BP 135/85 mmHg, HR 88 bpm. Patient appears uncomfortable and restless. Abdomen soft, non-distended. Marked tenderness over right costovertebral angle. No peritoneal signs. Bowel sounds normal.
+
+Laboratory Findings:
+- Urinalysis: RBC >100/hpf, WBC 5-10/hpf, pH 6.0
+- Serum Creatinine: 1.1 mg/dL (normal)
+- BUN: 18 mg/dL (normal)
+- Calcium: 9.8 mg/dL (normal)
+- Uric Acid: 6.2 mg/dL (normal)
+
+Imaging Studies:
+Non-contrast CT scan of abdomen and pelvis reveals:
+- 7mm calculus in the right proximal ureter causing moderate hydronephrosis
+- No evidence of ureteral perforation
+- Left kidney appears normal
+- No other significant findings
+
+Diagnosis:
+Right ureteral calculus (kidney stone) with associated hydronephrosis
+
+Treatment Plan:
+1. Pain management with IV ketorolac and morphine
+2. Aggressive hydration with IV fluids
+3. Alpha-blocker therapy (tamsulosin 0.4mg daily) to facilitate stone passage
+4. Antiemetic medication as needed
+5. Strain urine to capture stone for analysis
+6. Follow-up imaging in 2 weeks if stone not passed
+7. Urology referral if stone does not pass within 4 weeks or symptoms worsen
+
+Patient Education:
+- Increase fluid intake to 2-3 liters daily
+- Avoid foods high in oxalate (spinach, nuts, chocolate)
+- Return immediately if fever develops or pain becomes unmanageable
+- Stone analysis will guide future prevention strategies
+
+Prognosis:
+Good. Stones of this size have approximately 70% chance of spontaneous passage within 4 weeks with medical expulsive therapy. Patient advised to follow up with primary care physician and urology as scheduled.
+
+Dr. Sarah Johnson, MD
+Emergency Medicine
+License #: MD12345

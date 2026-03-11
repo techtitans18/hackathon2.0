@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { hospitalAPI, recordAPI } from '../services/api';
+import { hospitalAPI, patientAPI, emergencyAPI } from '../services/api';
 import HospitalRegistration from '../components/HospitalRegistration';
 import PatientRegistration from '../components/PatientRegistration';
 import UploadRecord from '../components/UploadRecord';
 import BlockchainViewer from '../components/BlockchainViewer';
+import PatientAccess from '../components/PatientAccess';
 
 export default function HospitalDashboard({ user }) {
   const [hospitalData, setHospitalData] = useState(user.hospital_id ? { HospitalID: user.hospital_id } : null);
@@ -14,6 +15,12 @@ export default function HospitalDashboard({ user }) {
   const [searchHealthId, setSearchHealthId] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [emergencySearchType, setEmergencySearchType] = useState('health_id');
+  const [emergencySearchValue, setEmergencySearchValue] = useState('');
+  const [emergencySearchName, setEmergencySearchName] = useState('');
+  const [emergencySearchDob, setEmergencySearchDob] = useState('');
+  const [emergencyProfile, setEmergencyProfile] = useState(null);
+  const [emergencyLoading, setEmergencyLoading] = useState(false);
 
   useEffect(() => {
     if (hospitalData) {
@@ -60,6 +67,37 @@ export default function HospitalDashboard({ user }) {
     }
   };
 
+  const handleEmergencySearch = async (e) => {
+    e.preventDefault();
+    setEmergencyLoading(true);
+    setError(null);
+    setEmergencyProfile(null);
+
+    try {
+      const payload = {
+        role: 'hospital',
+        search_type: emergencySearchType,
+        value: emergencySearchType !== 'name_dob' ? emergencySearchValue : null,
+        name: emergencySearchType === 'name_dob' ? emergencySearchName : null,
+        dob: emergencySearchType === 'name_dob' ? emergencySearchDob : null,
+      };
+
+      const searchResponse = await emergencyAPI.searchPatient(payload);
+      
+      if (searchResponse.data.health_id) {
+        const profileResponse = await emergencyAPI.getProfile({
+          role: 'hospital',
+          health_id: searchResponse.data.health_id,
+        });
+        setEmergencyProfile(profileResponse.data);
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || err.response?.data?.detail || 'Patient not found');
+    } finally {
+      setEmergencyLoading(false);
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <h2>Hospital Dashboard</h2>
@@ -92,6 +130,18 @@ export default function HospitalDashboard({ user }) {
               onClick={() => setActiveTab('search-patient')}
             >
               Search Patient
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'patient-access' ? 'active' : ''}`}
+              onClick={() => setActiveTab('patient-access')}
+            >
+              Patient Access (OTP)
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'emergency-access' ? 'active' : ''}`}
+              onClick={() => setActiveTab('emergency-access')}
+            >
+              Emergency Access
             </button>
             <button
               className={`tab-btn ${activeTab === 'blockchain' ? 'active' : ''}`}
@@ -160,6 +210,142 @@ export default function HospitalDashboard({ user }) {
                       </table>
                     </div>
                   )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'patient-access' && (
+            <PatientAccess />
+          )}
+
+          {activeTab === 'emergency-access' && (
+            <div className="emergency-search-section">
+              <h3>Emergency Patient Access</h3>
+              <p className="info-text">Search for patient using Health ID, Phone, or Name + DOB</p>
+              
+              <form onSubmit={handleEmergencySearch} className="emergency-form">
+                <div className="form-group">
+                  <label>Search By:</label>
+                  <select 
+                    value={emergencySearchType} 
+                    onChange={(e) => {
+                      setEmergencySearchType(e.target.value);
+                      setEmergencySearchValue('');
+                      setEmergencySearchName('');
+                      setEmergencySearchDob('');
+                    }}
+                  >
+                    <option value="health_id">Health ID</option>
+                    <option value="phone">Phone Number</option>
+                    <option value="name_dob">Name + Date of Birth</option>
+                  </select>
+                </div>
+
+                {emergencySearchType !== 'name_dob' ? (
+                  <div className="form-group">
+                    <label>{emergencySearchType === 'health_id' ? 'Health ID' : 'Phone Number'}:</label>
+                    <input
+                      type="text"
+                      value={emergencySearchValue}
+                      onChange={(e) => setEmergencySearchValue(e.target.value)}
+                      placeholder={emergencySearchType === 'health_id' ? 'Enter Health ID' : 'Enter Phone Number'}
+                      required
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className="form-group">
+                      <label>Patient Name:</label>
+                      <input
+                        type="text"
+                        value={emergencySearchName}
+                        onChange={(e) => setEmergencySearchName(e.target.value)}
+                        placeholder="Enter patient name"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Date of Birth:</label>
+                      <input
+                        type="date"
+                        value={emergencySearchDob}
+                        onChange={(e) => setEmergencySearchDob(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+
+                <button type="submit" disabled={emergencyLoading} className="btn-primary">
+                  {emergencyLoading ? 'Searching...' : 'Search Patient'}
+                </button>
+              </form>
+
+              {emergencyProfile && (
+                <div className="emergency-profile-result">
+                  <div className="profile-header">
+                    <h4>{emergencyProfile.name}</h4>
+                    <span className={`blockchain-badge ${emergencyProfile.blockchain_status === 'Verified' ? 'verified' : 'tampered'}`}>
+                      {emergencyProfile.blockchain_status}
+                    </span>
+                  </div>
+
+                  <div className="emergency-info-grid">
+                    <div className="info-card">
+                      <strong>Health ID:</strong>
+                      <span>{emergencyProfile.health_id}</span>
+                    </div>
+                    <div className="info-card blood-group-card">
+                      <strong>Blood Group:</strong>
+                      <span className="blood-group">{emergencyProfile.blood_group}</span>
+                    </div>
+                    <div className="info-card">
+                      <strong>Emergency Contact:</strong>
+                      <span>{emergencyProfile.emergency_contact}</span>
+                    </div>
+                  </div>
+
+                  <div className="medical-details">
+                    <div className="detail-section">
+                      <h5>Allergies</h5>
+                      {emergencyProfile.allergies.length > 0 ? (
+                        <ul className="medical-list">
+                          {emergencyProfile.allergies.map((item, idx) => (
+                            <li key={idx} className="allergy-item">{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="no-data">No allergies recorded</p>
+                      )}
+                    </div>
+
+                    <div className="detail-section">
+                      <h5>Diseases</h5>
+                      {emergencyProfile.diseases.length > 0 ? (
+                        <ul className="medical-list">
+                          {emergencyProfile.diseases.map((item, idx) => (
+                            <li key={idx} className="disease-item">{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="no-data">No diseases recorded</p>
+                      )}
+                    </div>
+
+                    <div className="detail-section">
+                      <h5>Surgeries</h5>
+                      {emergencyProfile.surgeries.length > 0 ? (
+                        <ul className="medical-list">
+                          {emergencyProfile.surgeries.map((item, idx) => (
+                            <li key={idx} className="surgery-item">{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="no-data">No surgeries recorded</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

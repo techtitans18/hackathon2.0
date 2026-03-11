@@ -49,13 +49,56 @@ export default function PatientRegistration({ hospitalId }) {
         setError('Please upload an image file');
         return;
       }
-      setPhotoFile(file);
+      
+      // Compress and resize image
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
-        setFormData({ ...formData, photo_url: reader.result });
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          // Create canvas for resizing
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Resize to max 200x200 to keep base64 small
+          const maxSize = 200;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > maxSize) {
+              height = (height * maxSize) / width;
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width = (width * maxSize) / height;
+              height = maxSize;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to base64 with compression (0.7 quality)
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+          
+          // Check if still too large (base64 should be < 1000 chars for backend)
+          // If too large, use empty string
+          if (compressedBase64.length > 1000) {
+            setPhotoPreview(compressedBase64);
+            setFormData({ ...formData, photo_url: '' }); // Don't send to backend
+            setError('Photo compressed but still too large. Proceeding without photo.');
+          } else {
+            setPhotoPreview(compressedBase64);
+            setFormData({ ...formData, photo_url: compressedBase64 });
+            setError(null);
+          }
+        };
+        img.src = event.target.result;
       };
       reader.readAsDataURL(file);
+      setPhotoFile(file);
     }
   };
 
@@ -84,7 +127,21 @@ export default function PatientRegistration({ hospitalId }) {
       setPhotoFile(null);
       setPhotoPreview(null);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to register patient');
+      // Handle validation errors from backend
+      if (err.response?.data?.detail) {
+        const detail = err.response.data.detail;
+        // Check if detail is an array of validation errors
+        if (Array.isArray(detail)) {
+          const errorMessages = detail.map(e => `${e.loc?.join('.')}: ${e.msg}`).join(', ');
+          setError(errorMessages);
+        } else if (typeof detail === 'string') {
+          setError(detail);
+        } else {
+          setError('Failed to register patient');
+        }
+      } else {
+        setError('Failed to register patient');
+      }
       console.error('Error:', err);
     } finally {
       setLoading(false);
