@@ -18,11 +18,17 @@ class PatientDashboardScreen(MDScreen):
         user = self.auth_service.get_current_user()
         if user:
             self.ids.patient_name.text = user.get('name', 'Patient')
-            health_id = user.get('health_id', 'Not Assigned')
-            self.ids.health_id.text = f"Health ID: {health_id}"
+            health_id = user.get('health_id')
             
-            # Load patient statistics
-            self.load_statistics()
+            if health_id:
+                self.ids.health_id.text = f"Health ID: {health_id}"
+                # Load patient statistics
+                self.load_statistics()
+            else:
+                self.ids.health_id.text = "Health ID: Not Assigned"
+                self.ids.total_records.text = "0"
+                self.ids.hospitals_visited.text = "0"
+                self.ids.last_activity.text = "No patient profile yet. Visit a hospital to register."
     
     def load_statistics(self):
         """Load patient statistics from API"""
@@ -36,7 +42,7 @@ class PatientDashboardScreen(MDScreen):
                 # Count unique hospitals
                 hospitals = set()
                 for record in records:
-                    hospital_id = record.get('hospital_id')
+                    hospital_id = record.get('HospitalID')
                     if hospital_id:
                         hospitals.add(hospital_id)
                 
@@ -46,9 +52,18 @@ class PatientDashboardScreen(MDScreen):
                 if records:
                     last_record = records[0]
                     last_date = last_record.get('timestamp', 'Unknown')
-                    self.ids.last_activity.text = f"Last record: {last_date[:10]}"
+                    record_type = last_record.get('record_type', 'Record')
+                    if last_date != 'Unknown':
+                        self.ids.last_activity.text = f"{record_type} - {last_date[:10]}"
+                    else:
+                        self.ids.last_activity.text = f"Last: {record_type}"
+                else:
+                    self.ids.last_activity.text = "No recent activity"
         except Exception as e:
             print(f"Error loading statistics: {e}")
+            self.ids.total_records.text = "0"
+            self.ids.hospitals_visited.text = "0"
+            self.ids.last_activity.text = "Error loading data"
     
     def open_menu(self):
         """Open navigation menu"""

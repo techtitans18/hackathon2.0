@@ -42,16 +42,43 @@ pip install -r requirements.txt
 ```
 
 ### Development Setup
+
+**IMPORTANT: You need to run BOTH backend and mobile app!**
+
+#### Step 1: Start Backend Server (Terminal 1)
 ```bash
-# Clone the repository
+# Navigate to backend directory
+cd ../backend
+
+# Start backend server
+python -m uvicorn main:app --reload
+
+# Keep this terminal running!
+```
+
+#### Step 2: Run Mobile App (Terminal 2)
+```bash
+# Navigate to mobile app directory
 cd healthcare_mobile
 
-# Install dependencies
+# Install dependencies (first time only)
 pip install -r requirements.txt
 
 # Run the app
 python main.py
 ```
+
+#### Step 3: Login with Test Credentials
+- **Email**: `test@patient.com`
+- **Password**: `password123`
+
+**Note**: If test user doesn't exist, run:
+```bash
+cd ../scripts
+python create_test_user.py
+```
+
+**See [QUICK_START.md](QUICK_START.md) for detailed instructions!**
 
 ## Building for Mobile
 
