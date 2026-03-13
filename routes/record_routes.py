@@ -99,23 +99,30 @@ def _build_ai_summary_source_text(
     description: str,
     file_content: bytes,
 ) -> str:
+    # Extract text directly from uploaded file
     extracted_report_text = _extract_report_text(file_content)
-    parts = [
-        f"Record type: {record_type.strip()}",
-        f"Clinical description: {description.strip()}",
-    ]
+    
+    # Prioritize file content over description
+    if extracted_report_text and len(extracted_report_text) >= 100:
+        # File has substantial content - use it directly
+        return extracted_report_text
+    
+    # Fallback: combine all available information
+    parts = []
+    if record_type.strip():
+        parts.append(f"Record type: {record_type.strip()}")
+    if description.strip():
+        parts.append(f"Clinical description: {description.strip()}")
     if extracted_report_text:
         parts.append(f"Report content: {extracted_report_text}")
     
     full_text = "\n".join(parts)
     
     # Check if content is too short for meaningful summarization
-    # BART model needs substantial text to avoid repetitive output
-    if len(full_text) < 150:
+    if len(full_text) < 100:
         raise ValueError(
             "Insufficient content for AI summarization. "
-            "Please provide detailed medical reports (at least 150 characters) "
-            "or write comprehensive clinical descriptions."
+            "Please upload medical reports with detailed content (at least 100 characters)."
         )
     
     return full_text
@@ -216,15 +223,14 @@ async def add_record(
                     ),
                 ) from exc
 
-        ai_input_text = _build_ai_summary_source_text(
-            record_type=record_type,
-            description=description,
-            file_content=file_content,
-        )
         try:
+            ai_input_text = _build_ai_summary_source_text(
+                record_type=record_type,
+                description=description,
+                file_content=file_content,
+            )
             summary_text = generate_medical_summary(ai_input_text)
         except ValueError as exc:
-            # Content too short - provide helpful error message
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=str(exc),
