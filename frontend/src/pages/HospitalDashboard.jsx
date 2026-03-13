@@ -83,7 +83,7 @@ export default function HospitalDashboard({ user }) {
       };
 
       const searchResponse = await emergencyAPI.searchPatient(payload);
-      
+
       if (searchResponse.data.health_id) {
         const profileResponse = await emergencyAPI.getProfile({
           role: 'hospital',
@@ -186,7 +186,7 @@ export default function HospitalDashboard({ user }) {
                     <p><strong>Email:</strong> {searchResult.patient?.email}</p>
                     <p><strong>Blood Group:</strong> {searchResult.patient?.blood_group}</p>
                   </div>
-                  
+
                   {searchResult.records && searchResult.records.length > 0 && (
                     <div className="records-section" style={{ marginTop: '2rem' }}>
                       <h4>Medical Records</h4>
@@ -223,12 +223,12 @@ export default function HospitalDashboard({ user }) {
             <div className="emergency-search-section">
               <h3>Emergency Patient Access</h3>
               <p className="info-text">Search for patient using Health ID, Phone, or Name + DOB</p>
-              
+
               <form onSubmit={handleEmergencySearch} className="emergency-form">
                 <div className="form-group">
                   <label>Search By:</label>
-                  <select 
-                    value={emergencySearchType} 
+                  <select
+                    value={emergencySearchType}
                     onChange={(e) => {
                       setEmergencySearchType(e.target.value);
                       setEmergencySearchValue('');
