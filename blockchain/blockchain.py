@@ -5,13 +5,26 @@ import json
 from datetime import datetime, timezone
 from typing import Any
 
+from database.db import get_blockchain_collection
+
 
 class HealthcareBlockchain:
     """Simple append-only blockchain for medical record integrity."""
 
     def __init__(self) -> None:
         self._chain: list[dict[str, Any]] = []
-        self._create_genesis_block()
+        self._load_from_db()
+        if not self._chain:
+            self._create_genesis_block()
+
+    def _load_from_db(self) -> None:
+        """Load blockchain from MongoDB on startup."""
+        try:
+            collection = get_blockchain_collection()
+            blocks = list(collection.find({}, {"_id": 0}).sort("index", 1))
+            self._chain = blocks
+        except Exception:
+            pass
 
     def _create_genesis_block(self) -> None:
         genesis_block = {
@@ -25,6 +38,7 @@ class HealthcareBlockchain:
         }
         genesis_block["hash"] = self.generate_hash(genesis_block)
         self._chain.append(genesis_block)
+        self._save_block_to_db(genesis_block)
 
     def generate_hash(self, block_data: dict[str, Any]) -> str:
         payload = json.dumps(block_data, sort_keys=True, separators=(",", ":"))
@@ -49,7 +63,16 @@ class HealthcareBlockchain:
         }
         block["hash"] = self.generate_hash(block)
         self._chain.append(block)
+        self._save_block_to_db(block)
         return block
+
+    def _save_block_to_db(self, block: dict[str, Any]) -> None:
+        """Persist block to MongoDB."""
+        try:
+            collection = get_blockchain_collection()
+            collection.replace_one({"index": block["index"]}, block, upsert=True)
+        except Exception:
+            pass
 
     def get_chain(self) -> list[dict[str, Any]]:
         return list(self._chain)

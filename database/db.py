@@ -117,6 +117,7 @@ def initialize_database() -> None:
     db["emergency_data"].create_index("health_id", unique=True)
     db["emergency_logs"].create_index([("health_id", 1), ("timestamp", -1)])
     db["emergency_logs"].create_index([("hospital_id", 1), ("timestamp", -1)])
+    db["blockchain"].create_index("index", unique=True)
 
 
 def get_patient_collection() -> Collection:
@@ -141,3 +142,7 @@ def get_emergency_data_collection() -> Collection:
 
 def get_emergency_log_collection() -> Collection:
     return get_database()["emergency_logs"]
+
+
+def get_blockchain_collection() -> Collection:
+    return get_database()["blockchain"]

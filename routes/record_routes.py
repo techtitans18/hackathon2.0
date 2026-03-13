@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse
 from pymongo.errors import PyMongoError
 
 from blockchain.verify import verify_blockchain_integrity
+from utils.encryption import encrypt_file, decrypt_file
 
 from app.ai_summary.summarizer import (
     SummarizerUnavailableError,
@@ -210,7 +211,10 @@ async def add_record(
         safe_filename = Path(file.filename).name
         stored_filename = f"{uuid4()}_{safe_filename}"
         stored_path = RECORDS_DIR / stored_filename
-        stored_path.write_bytes(file_content)
+        
+        # Encrypt file before storing
+        encrypted_content = encrypt_file(file_content)
+        stored_path.write_bytes(encrypted_content)
 
         if not is_summarizer_ready():
             try:
@@ -244,7 +248,11 @@ async def add_record(
         summary_file_name = f"{Path(safe_filename).stem}_ai_summary.txt"
         summary_stored_filename = f"{uuid4()}_{summary_file_name}"
         summary_stored_path = RECORDS_DIR / summary_stored_filename
-        summary_stored_path.write_text(f"{summary_text}\n", encoding="utf-8")
+        
+        # Encrypt summary before storing
+        summary_bytes = f"{summary_text}\n".encode('utf-8')
+        encrypted_summary = encrypt_file(summary_bytes)
+        summary_stored_path.write_bytes(encrypted_summary)
 
         record_hash = hashlib.sha256(file_content).hexdigest()
         timestamp = datetime.now(timezone.utc)
@@ -446,8 +454,28 @@ def download_record_file(
             detail="Record file not found.",
         )
 
+    # Decrypt file before sending
+    encrypted_content = file_path.read_bytes()
+    try:
+        decrypted_content = decrypt_file(encrypted_content)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to decrypt file.",
+        ) from exc
+    
+    # Write decrypted content to temporary file for response
+    temp_path = RECORDS_DIR / f"temp_{safe_stored_name}"
+    temp_path.write_bytes(decrypted_content)
+    
     download_name = str(record.get("file_name", safe_stored_name))
-    return FileResponse(path=file_path, filename=download_name)
+    response = FileResponse(path=temp_path, filename=download_name)
+    
+    # Clean up temp file after response
+    import atexit
+    atexit.register(lambda: temp_path.unlink(missing_ok=True))
+    
+    return response
 
 
 @router.get("/record/summary/{summary_stored_file_name}")
@@ -497,5 +525,25 @@ def download_summary_file(
             detail="Summary file not found.",
         )
 
+    # Decrypt summary before sending
+    encrypted_content = file_path.read_bytes()
+    try:
+        decrypted_content = decrypt_file(encrypted_content)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to decrypt summary file.",
+        ) from exc
+    
+    # Write decrypted content to temporary file for response
+    temp_path = RECORDS_DIR / f"temp_{safe_stored_name}"
+    temp_path.write_bytes(decrypted_content)
+    
     download_name = str(record.get("summary_file_name", safe_stored_name))
-    return FileResponse(path=file_path, filename=download_name)
+    response = FileResponse(path=temp_path, filename=download_name)
+    
+    # Clean up temp file after response
+    import atexit
+    atexit.register(lambda: temp_path.unlink(missing_ok=True))
+    
+    return response

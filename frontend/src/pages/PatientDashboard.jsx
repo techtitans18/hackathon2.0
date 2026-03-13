@@ -22,9 +22,20 @@ export default function PatientDashboard({ user }) {
         patientAPI.getEHealthCard().catch(() => null),
       ]);
 
-      setProfile(profileRes.data.patient);
-      if (cardRes?.data) {
-        setEHealthCard(cardRes.data);
+      const patientData = profileRes.data.patient;
+      setProfile(patientData);
+      
+      // Use patient data for e-health card
+      if (patientData) {
+        setEHealthCard({
+          health_id: patientData.HealthID,
+          name: patientData.name,
+          blood_group: patientData.blood_group,
+          phone: patientData.phone,
+          dob: patientData.dob,
+          photo_url: patientData.photo_url,
+          email: patientData.email,
+        });
       }
 
       if (profileRes.data.records) {
@@ -85,7 +96,10 @@ export default function PatientDashboard({ user }) {
       {error && <div className="error-message">{error}</div>}
 
       {eHealthCard && (
-        <EHealthCard card={eHealthCard} />
+        <div className="ehealth-card-section">
+          <h3>e-Health Card</h3>
+          <EHealthCard patient={eHealthCard} />
+        </div>
       )}
 
       {profile && (

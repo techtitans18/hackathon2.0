@@ -1,0 +1,501 @@
+/* e-Health Card Styles - Aadhaar/PAN Card Size */
+
+.ehealth-card-wrapper {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.ehealth-card-loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Action Buttons */
+.ehealth-card-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.card-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.print-btn {
+  background: #f8f9fa;
+  color: #333;
+  border: 2px solid #ddd;
+}
+
+.print-btn:hover {
+  background: #e9ecef;
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* Card Container - Aadhaar/PAN Card Size (85.6mm × 53.98mm) */
+.ehealth-card-container {
+  position: relative;
+  width: 323px; /* 85.6mm at 96 DPI */
+  height: 204px; /* 53.98mm at 96 DPI */
+  margin: 0 auto;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  border: 2px solid #e0e0e0;
+}
+
+/* Card Header */
+.ehealth-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  height: 40px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-emblem {
+  font-size: 1.5rem;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+}
+
+.header-text h3 {
+  font-size: 0.5rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-text h2 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 2px 0 0 0;
+  letter-spacing: 1px;
+}
+
+.header-flag {
+  display: flex;
+  flex-direction: column;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.flag-stripe {
+  flex: 1;
+}
+
+.flag-stripe.orange {
+  background: #FF9933;
+}
+
+.flag-stripe.white {
+  background: #FFFFFF;
+}
+
+.flag-stripe.green {
+  background: #138808;
+}
+
+/* Card Body */
+.ehealth-card-body {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  background: white;
+  height: 144px;
+}
+
+/* Left Section - Patient Details */
+.card-left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.5rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.detail-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.detail-value.health-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: #667eea;
+  letter-spacing: 1px;
+}
+
+.detail-value.blood-group {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+/* Blood Group Colors */
+.detail-value.blood-group.a-positive,
+.detail-value.blood-group.a-negative {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef5350;
+}
+
+.detail-value.blood-group.b-positive,
+.detail-value.blood-group.b-negative {
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #42a5f5;
+}
+
+.detail-value.blood-group.ab-positive,
+.detail-value.blood-group.ab-negative {
+  background: #f3e5f5;
+  color: #6a1b9a;
+  border: 1px solid #ab47bc;
+}
+
+.detail-value.blood-group.o-positive,
+.detail-value.blood-group.o-negative {
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ff9800;
+}
+
+/* Right Section - Photo and QR */
+.card-right-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.patient-photo {
+  width: 70px;
+  height: 85px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #667eea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.patient-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.photo-placeholder svg {
+  width: 30px;
+  height: 30px;
+}
+
+.qr-code-section {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.qr-code {
+  width: 100%;
+  height: 100%;
+}
+
+.qr-placeholder {
+  font-size: 1.2rem;
+  color: #ccc;
+  font-weight: 700;
+}
+
+/* Card Footer */
+.ehealth-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-top: 1px solid #e0e0e0;
+  height: 20px;
+}
+
+.footer-note {
+  font-size: 0.5rem;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+.hologram {
+  position: relative;
+  width: 50px;
+  height: 20px;
+  background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.5rem;
+  color: #333;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(255, 215, 0, 0.5);
+}
+
+.hologram-shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Decorative Patterns */
+.card-pattern {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  opacity: 0.02;
+  pointer-events: none;
+}
+
+.card-pattern-top {
+  top: -30px;
+  right: -30px;
+  background: radial-gradient(circle, #667eea 20%, transparent 20%),
+              radial-gradient(circle, #667eea 20%, transparent 20%);
+  background-size: 15px 15px;
+  background-position: 0 0, 7.5px 7.5px;
+}
+
+.card-pattern-bottom {
+  bottom: -30px;
+  left: -30px;
+  background: radial-gradient(circle, #764ba2 20%, transparent 20%),
+              radial-gradient(circle, #764ba2 20%, transparent 20%);
+  background-size: 15px 15px;
+  background-position: 0 0, 7.5px 7.5px;
+}
+
+/* Card Back (for print) */
+.ehealth-card-back {
+  display: none;
+  max-width: 850px;
+  margin: 20px auto;
+  background: white;
+  border-radius: 20px;
+  border: 3px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.back-header {
+  padding: 20px 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.back-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.back-content {
+  padding: 30px;
+}
+
+.back-section {
+  margin-bottom: 25px;
+}
+
+.back-section h4 {
+  font-size: 1.1rem;
+  color: #667eea;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 5px;
+}
+
+.back-section p {
+  margin: 5px 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.back-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.back-section ul li {
+  padding: 5px 0;
+  color: #666;
+}
+
+.back-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #f0f0f0;
+  text-align: center;
+}
+
+.back-footer p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.helpline {
+  font-weight: 700;
+  color: #667eea !important;
+  font-size: 1rem !important;
+}
+
+/* Print Styles */
+@media print {
+  .ehealth-card-actions {
+    display: none !important;
+  }
+
+  .ehealth-card-wrapper {
+    padding: 0;
+  }
+
+  .ehealth-card-container {
+    box-shadow: none;
+    border: 2px solid #333;
+    page-break-after: always;
+  }
+
+  .ehealth-card-back {
+    display: block !important;
+    box-shadow: none;
+    border: 2px solid #333;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ehealth-card-container {
+    width: 100%;
+    height: auto;
+    min-height: 204px;
+  }
+
+  .ehealth-card-body {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+
+  .card-left-section {
+    width: 100%;
+  }
+
+  .ehealth-card-actions {
+    flex-direction: column;
+  }
+
+  .card-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
