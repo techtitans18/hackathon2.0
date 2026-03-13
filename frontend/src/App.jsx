@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { authAPI } from './services/api';
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import HospitalDashboard from './pages/HospitalDashboard';
@@ -41,40 +42,43 @@ function App() {
     setUser(null);
   };
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Login onLoginSuccess={(userData) => setUser(userData)} />;
-  }
-
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <Navbar user={user} onLogout={handleLogout} />
-        <Routes>
-          {user.role === 'admin' && (
-            <Route path="/admin" element={<AdminDashboard user={user} />} />
-          )}
-          {user.role === 'hospital' && (
-            <Route path="/hospital" element={<HospitalDashboard user={user} />} />
-          )}
-          {user.role === 'patient' && (
-            <Route path="/patient" element={<PatientDashboard user={user} />} />
-          )}
-          {user.role === 'doctor' && (
-            <Route path="/doctor" element={<DoctorDashboard user={user} />} />
-          )}
-          {(user.role === 'hospital' || user.role === 'emergency') && (
-            <Route path="/emergency" element={<EmergencyDashboard user={user} />} />
-          )}
-          <Route path="/" element={<Navigate to={`/${user.role}`} />} />
-        </Routes>
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <p>Loading...</p>
+          </div>
+        ) : (
+          <>
+            {user && <Navbar user={user} onLogout={handleLogout} />}
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={!user ? <LandingPage /> : <Navigate to={`/${user.role}`} />} />
+              <Route path="/login" element={!user ? <Login onLoginSuccess={(userData) => setUser(userData)} /> : <Navigate to={`/${user.role}`} />} />
+              
+              {/* Protected Routes */}
+              {user && user.role === 'admin' && (
+                <Route path="/admin" element={<AdminDashboard user={user} />} />
+              )}
+              {user && user.role === 'hospital' && (
+                <Route path="/hospital" element={<HospitalDashboard user={user} />} />
+              )}
+              {user && user.role === 'patient' && (
+                <Route path="/patient" element={<PatientDashboard user={user} />} />
+              )}
+              {user && user.role === 'doctor' && (
+                <Route path="/doctor" element={<DoctorDashboard user={user} />} />
+              )}
+              {user && (user.role === 'hospital' || user.role === 'emergency') && (
+                <Route path="/emergency" element={<EmergencyDashboard user={user} />} />
+              )}
+              
+              {/* Catch all - redirect to home */}
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </>
+        )}
       </BrowserRouter>
     </ErrorBoundary>
   );
