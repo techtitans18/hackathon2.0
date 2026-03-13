@@ -1,0 +1,50 @@
+<HealthCardScreen>:
+    name: 'health_card'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "E-Health Card"
+            left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'patient_dashboard')]]
+        
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(20)
+            
+            MDCard:
+                orientation: 'vertical'
+                padding: dp(20)
+                size_hint_y: None
+                height: dp(500)
+                elevation: 3
+                
+                MDLabel:
+                    text: "Digital Health Card"
+                    font_style: "H6"
+                    halign: "center"
+                
+                Image:
+                    id: qr_image
+                    size_hint: (None, None)
+                    size: dp(300), dp(300)
+                    pos_hint: {"center_x": 0.5}
+                
+                MDLabel:
+                    id: patient_name
+                    text: ""
+                    font_style: "H6"
+                    halign: "center"
+                
+                MDLabel:
+                    id: patient_id
+                    text: ""
+                    font_style: "Body2"
+                    halign: "center"
+                    theme_text_color: "Secondary"
+            
+            MDLabel:
+                text: "Show this QR code at hospitals for quick access"
+                halign: "center"
+                theme_text_color: "Hint"

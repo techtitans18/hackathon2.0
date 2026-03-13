@@ -1,0 +1,64 @@
+<HospitalDashboardScreen>:
+    name: 'hospital_dashboard'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Hospital Dashboard"
+            right_action_items: [["logout", lambda x: root.logout()]]
+        
+        MDScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: dp(20)
+                spacing: dp(15)
+                adaptive_height: True
+                
+                MDCard:
+                    orientation: 'vertical'
+                    padding: dp(15)
+                    size_hint_y: None
+                    height: dp(100)
+                    elevation: 2
+                    
+                    MDLabel:
+                        id: hospital_name
+                        text: ""
+                        font_style: "H6"
+                
+                MDRaisedButton:
+                    text: "Register New Patient"
+                    icon: "account-plus"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.register_patient()
+                
+                MDRaisedButton:
+                    text: "Add Medical Record"
+                    icon: "file-plus"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.add_record()
+                
+                MDRaisedButton:
+                    text: "Scan QR Code"
+                    icon: "qrcode-scan"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.scan_qr()
+                
+                MDRaisedButton:
+                    text: "Emergency Access"
+                    icon: "alert"
+                    size_hint_y: None
+                    height: dp(50)
+                    md_bg_color: app.theme_cls.error_color
+                    on_release: root.emergency_access()
+                
+                MDRaisedButton:
+                    text: "View Patients"
+                    icon: "account-group"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.view_patients()

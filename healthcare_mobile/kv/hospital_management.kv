@@ -1,0 +1,13 @@
+<HospitalManagementScreen>:
+    name: 'hospital_management'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Hospital Management"
+            left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'admin_dashboard')]]
+        
+        MDScrollView:
+            MDList:
+                id: hospitals_list

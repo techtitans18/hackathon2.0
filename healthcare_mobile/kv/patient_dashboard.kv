@@ -1,0 +1,260 @@
+<PatientDashboardScreen>:
+    name: 'patient_dashboard'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        # Modern App Bar with gradient
+        MDTopAppBar:
+            title: "Patient Dashboard"
+            md_bg_color: 0.2, 0.6, 0.86, 1
+            elevation: 4
+            left_action_items: [["menu", lambda x: root.open_menu()]]
+            right_action_items: [["account-circle", lambda x: root.open_profile()], ["logout", lambda x: root.logout()]]
+        
+        MDScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: dp(15)
+                spacing: dp(15)
+                adaptive_height: True
+                
+                # Welcome Card with Patient Info
+                MDCard:
+                    orientation: 'vertical'
+                    padding: dp(20)
+                    size_hint_y: None
+                    height: dp(150)
+                    elevation: 3
+                    radius: [15, 15, 15, 15]
+                    md_bg_color: 0.95, 0.97, 1, 1
+                    
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: dp(15)
+                        
+                        MDIcon:
+                            icon: "account-circle"
+                            font_size: dp(60)
+                            theme_text_color: "Custom"
+                            text_color: 0.2, 0.6, 0.86, 1
+                            size_hint_x: None
+                            width: dp(60)
+                        
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            spacing: dp(5)
+                            
+                            MDLabel:
+                                text: "Welcome Back!"
+                                font_style: "H6"
+                                bold: True
+                                theme_text_color: "Primary"
+                            
+                            MDLabel:
+                                id: patient_name
+                                text: "Loading..."
+                                font_style: "Body1"
+                                theme_text_color: "Secondary"
+                            
+                            MDLabel:
+                                id: health_id
+                                text: "Health ID: ---"
+                                font_style: "Caption"
+                                theme_text_color: "Hint"
+                
+                # Quick Stats Cards
+                MDLabel:
+                    text: "Quick Overview"
+                    font_style: "H6"
+                    bold: True
+                    size_hint_y: None
+                    height: dp(30)
+                    padding: [dp(5), 0, 0, 0]
+                
+                MDGridLayout:
+                    cols: 2
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: dp(120)
+                    
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: dp(15)
+                        elevation: 2
+                        radius: [10, 10, 10, 10]
+                        
+                        MDIcon:
+                            icon: "file-document-multiple"
+                            halign: "center"
+                            font_size: dp(35)
+                            theme_text_color: "Custom"
+                            text_color: 0.3, 0.7, 0.4, 1
+                        
+                        MDLabel:
+                            id: total_records
+                            text: "0"
+                            font_style: "H5"
+                            halign: "center"
+                            bold: True
+                        
+                        MDLabel:
+                            text: "Total Records"
+                            font_style: "Caption"
+                            halign: "center"
+                            theme_text_color: "Secondary"
+                    
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: dp(15)
+                        elevation: 2
+                        radius: [10, 10, 10, 10]
+                        
+                        MDIcon:
+                            icon: "hospital-building"
+                            halign: "center"
+                            font_size: dp(35)
+                            theme_text_color: "Custom"
+                            text_color: 0.9, 0.5, 0.2, 1
+                        
+                        MDLabel:
+                            id: hospitals_visited
+                            text: "0"
+                            font_style: "H5"
+                            halign: "center"
+                            bold: True
+                        
+                        MDLabel:
+                            text: "Hospitals"
+                            font_style: "Caption"
+                            halign: "center"
+                            theme_text_color: "Secondary"
+                
+                # Main Actions Section
+                MDLabel:
+                    text: "Quick Actions"
+                    font_style: "H6"
+                    bold: True
+                    size_hint_y: None
+                    height: dp(30)
+                    padding: [dp(5), dp(10), 0, 0]
+                
+                # Action Buttons Grid
+                MDGridLayout:
+                    cols: 2
+                    spacing: dp(10)
+                    size_hint_y: None
+                    height: dp(280)
+                    
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: dp(15)
+                        elevation: 2
+                        radius: [10, 10, 10, 10]
+                        ripple_behavior: True
+                        on_release: root.view_records()
+                        
+                        MDIcon:
+                            icon: "file-document"
+                            halign: "center"
+                            font_size: dp(40)
+                            theme_text_color: "Custom"
+                            text_color: 0.2, 0.6, 0.86, 1
+                        
+                        MDLabel:
+                            text: "Medical\nRecords"
+                            font_style: "Body1"
+                            halign: "center"
+                            bold: True
+                    
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: dp(15)
+                        elevation: 2
+                        radius: [10, 10, 10, 10]
+                        ripple_behavior: True
+                        on_release: root.show_health_card()
+                        
+                        MDIcon:
+                            icon: "card-account-details"
+                            halign: "center"
+                            font_size: dp(40)
+                            theme_text_color: "Custom"
+                            text_color: 0.3, 0.7, 0.4, 1
+                        
+                        MDLabel:
+                            text: "E-Health\nCard"
+                            font_style: "Body1"
+                            halign: "center"
+                            bold: True
+                    
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: dp(15)
+                        elevation: 2
+                        radius: [10, 10, 10, 10]
+                        ripple_behavior: True
+                        on_release: root.download_records()
+                        
+                        MDIcon:
+                            icon: "download"
+                            halign: "center"
+                            font_size: dp(40)
+                            theme_text_color: "Custom"
+                            text_color: 0.9, 0.5, 0.2, 1
+                        
+                        MDLabel:
+                            text: "Download\nRecords"
+                            font_style: "Body1"
+                            halign: "center"
+                            bold: True
+                    
+                    MDCard:
+                        orientation: 'vertical'
+                        padding: dp(15)
+                        elevation: 2
+                        radius: [10, 10, 10, 10]
+                        ripple_behavior: True
+                        on_release: root.go_to_profile()
+                        
+                        MDIcon:
+                            icon: "account-cog"
+                            halign: "center"
+                            font_size: dp(40)
+                            theme_text_color: "Custom"
+                            text_color: 0.6, 0.4, 0.8, 1
+                        
+                        MDLabel:
+                            text: "Profile\nSettings"
+                            font_style: "Body1"
+                            halign: "center"
+                            bold: True
+                
+                # Recent Activity Section
+                MDLabel:
+                    text: "Recent Activity"
+                    font_style: "H6"
+                    bold: True
+                    size_hint_y: None
+                    height: dp(30)
+                    padding: [dp(5), dp(10), 0, 0]
+                
+                MDCard:
+                    orientation: 'vertical'
+                    padding: dp(15)
+                    size_hint_y: None
+                    height: dp(100)
+                    elevation: 2
+                    radius: [10, 10, 10, 10]
+                    
+                    MDLabel:
+                        id: last_activity
+                        text: "No recent activity"
+                        font_style: "Body2"
+                        theme_text_color: "Secondary"
+                        halign: "center"
+                
+                # Spacer
+                Widget:
+                    size_hint_y: None
+                    height: dp(20)

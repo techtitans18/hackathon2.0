@@ -1,0 +1,61 @@
+<AddRecordScreen>:
+    name: 'add_record'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Add Medical Record"
+            left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'hospital_dashboard')]]
+        
+        MDScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: dp(20)
+                spacing: dp(15)
+                adaptive_height: True
+                
+                MDTextField:
+                    id: patient_id_field
+                    hint_text: "Patient ID"
+                    mode: "rectangle"
+                
+                MDTextField:
+                    id: diagnosis_field
+                    hint_text: "Diagnosis"
+                    mode: "rectangle"
+                    multiline: True
+                
+                MDTextField:
+                    id: treatment_field
+                    hint_text: "Treatment"
+                    mode: "rectangle"
+                    multiline: True
+                
+                MDTextField:
+                    id: doctor_field
+                    hint_text: "Doctor Name"
+                    mode: "rectangle"
+                
+                MDTextField:
+                    id: date_field
+                    hint_text: "Date"
+                    mode: "rectangle"
+                    readonly: True
+                    on_focus: root.select_date() if self.focus else None
+                
+                MDRaisedButton:
+                    text: "Take Photo"
+                    icon: "camera"
+                    size_hint_x: 1
+                    on_release: root.take_photo()
+                
+                MDLabel:
+                    id: photo_status
+                    text: ""
+                    halign: "center"
+                
+                MDRaisedButton:
+                    text: "Submit Record"
+                    size_hint_x: 1
+                    on_release: root.submit_record()

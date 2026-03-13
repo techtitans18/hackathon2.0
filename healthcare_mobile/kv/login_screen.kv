@@ -1,0 +1,118 @@
+<LoginScreen>:
+    name: 'login'
+    
+    MDFloatLayout:
+        # Background gradient effect
+        canvas.before:
+            Color:
+                rgba: 0.2, 0.6, 0.86, 1  # Blue gradient
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        
+        # Main content card
+        MDCard:
+            orientation: 'vertical'
+            size_hint: 0.9, None
+            height: dp(500)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            elevation: 10
+            padding: dp(25)
+            spacing: dp(20)
+            radius: [20, 20, 20, 20]
+            
+            MDBoxLayout:
+                orientation: 'vertical'
+                spacing: dp(20)
+                
+                # Logo and Title Section
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: dp(120)
+                    spacing: dp(10)
+                    
+                    MDIcon:
+                        icon: "hospital-box"
+                        halign: "center"
+                        font_size: dp(60)
+                        theme_text_color: "Custom"
+                        text_color: 0.2, 0.6, 0.86, 1
+                    
+                    MDLabel:
+                        text: "Healthcare Blockchain"
+                        font_style: "H5"
+                        halign: "center"
+                        bold: True
+                        theme_text_color: "Primary"
+                    
+                    MDLabel:
+                        text: "Secure Medical Records"
+                        font_style: "Caption"
+                        halign: "center"
+                        theme_text_color: "Secondary"
+                
+                # Login Form Section
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(15)
+                    size_hint_y: None
+                    height: dp(250)
+                    
+                    MDTextField:
+                        id: email_field
+                        hint_text: "Email Address"
+                        icon_left: "email"
+                        mode: "rectangle"
+                        size_hint_x: 1
+                        font_size: dp(16)
+                        helper_text: "Enter your registered email"
+                        helper_text_mode: "on_focus"
+                    
+                    MDTextField:
+                        id: password_field
+                        hint_text: "Password"
+                        icon_left: "lock"
+                        password: True
+                        mode: "rectangle"
+                        size_hint_x: 1
+                        font_size: dp(16)
+                        helper_text: "Enter your password"
+                        helper_text_mode: "on_focus"
+                    
+                    MDRaisedButton:
+                        text: "LOGIN"
+                        size_hint_x: 1
+                        pos_hint: {"center_x": 0.5}
+                        md_bg_color: 0.2, 0.6, 0.86, 1
+                        font_size: dp(16)
+                        size_hint_y: None
+                        height: dp(50)
+                        on_release: root.on_login()
+                    
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: dp(40)
+                        spacing: dp(5)
+                        
+                        MDLabel:
+                            text: "Don't have an account?"
+                            font_style: "Caption"
+                            halign: "right"
+                            theme_text_color: "Secondary"
+                        
+                        MDFlatButton:
+                            text: "Register"
+                            theme_text_color: "Custom"
+                            text_color: 0.2, 0.6, 0.86, 1
+                            on_release: root.go_to_register()
+                
+                # Footer
+                MDLabel:
+                    text: "Powered by Blockchain Technology"
+                    font_style: "Caption"
+                    halign: "center"
+                    theme_text_color: "Hint"
+                    size_hint_y: None
+                    height: dp(30)

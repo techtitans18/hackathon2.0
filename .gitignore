@@ -1,27 +1,77 @@
 # Python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Virtual environment
-.venv/
+# Virtual Environment
 venv/
+env/
+ENV/
+.venv
 
-# Environment secrets
+# Environment Variables
 .env
-.env.*
-!.env.example
+.env.local
+.env.*.local
 
-# Local uploaded records
-records/*
-!records/.gitkeep
-
-# Local AI model artifacts
-models/ai_summary/
-
-# OS/Editor
-.DS_Store
-Thumbs.db
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backend
+backend/records/*
+!backend/records/.gitkeep
+backend/models/ai_summary/facebook-bart-large-cnn/*
+!backend/models/ai_summary/facebook-bart-large-cnn/.gitkeep
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/

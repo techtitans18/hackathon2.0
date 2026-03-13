@@ -1,0 +1,60 @@
+<AdminDashboardScreen>:
+    name: 'admin_dashboard'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Admin Dashboard"
+            right_action_items: [["logout", lambda x: root.logout()]]
+        
+        MDScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: dp(20)
+                spacing: dp(15)
+                adaptive_height: True
+                
+                MDCard:
+                    orientation: 'vertical'
+                    padding: dp(15)
+                    size_hint_y: None
+                    height: dp(150)
+                    elevation: 2
+                    
+                    MDLabel:
+                        text: "System Statistics"
+                        font_style: "H6"
+                    
+                    MDLabel:
+                        id: stats_text
+                        text: "Loading..."
+                        font_style: "Body2"
+                
+                MDRaisedButton:
+                    text: "User Management"
+                    icon: "account-multiple"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.manage_users()
+                
+                MDRaisedButton:
+                    text: "Hospital Management"
+                    icon: "hospital-building"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.manage_hospitals()
+                
+                MDRaisedButton:
+                    text: "Blockchain Viewer"
+                    icon: "link-variant"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.view_blockchain()
+                
+                MDRaisedButton:
+                    text: "System Logs"
+                    icon: "text-box"
+                    size_hint_y: None
+                    height: dp(50)
+                    on_release: root.view_logs()

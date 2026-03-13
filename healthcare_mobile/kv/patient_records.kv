@@ -1,0 +1,13 @@
+<PatientRecordsScreen>:
+    name: 'patient_records'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Medical Records"
+            left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'patient_dashboard')]]
+        
+        MDScrollView:
+            MDList:
+                id: records_list

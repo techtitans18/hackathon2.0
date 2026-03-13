@@ -20,6 +20,7 @@ from routes.hospital_routes import router as hospital_router
 from routes.patient_routes import router as patient_router
 from routes.patient_access_routes import router as patient_access_router
 from routes.record_routes import router as record_router
+from routes.mobile_auth_routes import router as mobile_auth_router
 
 logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve().parent
@@ -113,3 +114,4 @@ app.include_router(patient_access_router)
 app.include_router(record_router)
 app.include_router(ai_summary_router)
 app.include_router(emergency_router)
+app.include_router(mobile_auth_router)

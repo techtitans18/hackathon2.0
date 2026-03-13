@@ -1,0 +1,46 @@
+<RegisterPatientScreen>:
+    name: 'register_patient'
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Register New Patient"
+            left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'hospital_dashboard')]]
+        
+        MDScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: dp(20)
+                spacing: dp(15)
+                adaptive_height: True
+                
+                MDTextField:
+                    id: name_field
+                    hint_text: "Full Name"
+                    mode: "rectangle"
+                
+                MDTextField:
+                    id: email_field
+                    hint_text: "Email"
+                    mode: "rectangle"
+                
+                MDTextField:
+                    id: phone_field
+                    hint_text: "Phone Number"
+                    mode: "rectangle"
+                
+                MDTextField:
+                    id: dob_field
+                    hint_text: "Date of Birth (YYYY-MM-DD)"
+                    mode: "rectangle"
+                
+                MDTextField:
+                    id: blood_group_field
+                    hint_text: "Blood Group"
+                    mode: "rectangle"
+                
+                MDRaisedButton:
+                    text: "Register Patient"
+                    size_hint_x: 1
+                    on_release: root.register_patient()
