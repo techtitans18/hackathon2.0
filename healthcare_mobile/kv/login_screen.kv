@@ -90,23 +90,13 @@
                         height: dp(50)
                         on_release: root.on_login()
                     
-                    MDBoxLayout:
-                        orientation: 'horizontal'
+                    MDLabel:
+                        text: "Patient login only. Register at your hospital."
+                        font_style: "Caption"
+                        halign: "center"
+                        theme_text_color: "Secondary"
                         size_hint_y: None
-                        height: dp(40)
-                        spacing: dp(5)
-                        
-                        MDLabel:
-                            text: "Don't have an account?"
-                            font_style: "Caption"
-                            halign: "right"
-                            theme_text_color: "Secondary"
-                        
-                        MDFlatButton:
-                            text: "Register"
-                            theme_text_color: "Custom"
-                            text_color: 0.2, 0.6, 0.86, 1
-                            on_release: root.go_to_register()
+                        height: dp(30)
                 
                 # Footer
                 MDLabel:

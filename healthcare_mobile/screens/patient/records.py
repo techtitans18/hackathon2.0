@@ -16,39 +16,42 @@ class PatientRecordsScreen(MDScreen):
         self.load_records()
     
     def load_records(self):
-        # Try to get from cache first
         cached_records = self.cache_manager.get('patient_records')
-        
         if cached_records:
             self.display_records(cached_records)
         else:
-            # Fetch from API
-            response = self.api_client.get('/patient/records')
-            
+            response = self.api_client.get('/patient/me')
             if 'error' in response:
                 self.show_dialog("Error", response['error'])
                 return
-            
             records = response.get('records', [])
             self.cache_manager.set('patient_records', records)
             self.display_records(records)
     
     def display_records(self, records):
-        # Clear existing list
         if hasattr(self.ids, 'records_list'):
             self.ids.records_list.clear_widgets()
-        
+        if not records:
+            from kivymd.uix.list import OneLineListItem
+            self.ids.records_list.add_widget(OneLineListItem(text="No records found."))
+            return
         for record in records:
             item = TwoLineListItem(
-                text=record.get('diagnosis', 'No diagnosis'),
-                secondary_text=f"Date: {record.get('date', 'N/A')} | Dr. {record.get('doctor_name', 'Unknown')}",
+                text=f"{record.get('record_type', 'Record')} — {record.get('description', 'N/A')}",
+                secondary_text=f"Hospital: {record.get('HospitalID', 'N/A')} | {str(record.get('timestamp', 'N/A'))[:10]}",
                 on_release=lambda x, r=record: self.view_record_detail(r)
             )
             self.ids.records_list.add_widget(item)
     
     def view_record_detail(self, record):
-        self.manager.get_screen('record_detail').set_record(record)
-        self.manager.current = 'record_detail'
+        msg = (
+            f"Type: {record.get('record_type', 'N/A')}\n"
+            f"Description: {record.get('description', 'N/A')}\n"
+            f"Hospital: {record.get('HospitalID', 'N/A')}\n"
+            f"Date: {str(record.get('timestamp', 'N/A'))[:10]}\n"
+            f"File: {record.get('file_name', 'N/A')}"
+        )
+        self.show_dialog("Record Details", msg)
     
     def show_dialog(self, title, message):
         if self.dialog:

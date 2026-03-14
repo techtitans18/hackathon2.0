@@ -9,9 +9,11 @@ class UserManagementScreen(MDScreen):
         super().__init__(**kwargs)
         self.api_client = APIClient()
         self.dialog = None
-    
+        self._loaded = False
+
     def on_enter(self):
-        self.load_users()
+        if not self._loaded:
+            self.load_users()
     
     def load_users(self):
         response = self.api_client.get('/admin/users')
@@ -29,19 +31,22 @@ class UserManagementScreen(MDScreen):
         
         for user in users:
             item = TwoLineListItem(
-                text=user.get('name', 'N/A'),
-                secondary_text=f"{user.get('email', 'N/A')} | Role: {user.get('role', 'N/A')}",
+                text=user.get('name', user.get('email', 'N/A')),
+                secondary_text=f"{user.get('email', 'N/A')} | Role: {user.get('role', 'N/A')} | Active: {user.get('is_active', 'N/A')}",
                 on_release=lambda x, u=user: self.view_user_detail(u)
             )
             self.ids.users_list.add_widget(item)
+        self._loaded = True
     
     def view_user_detail(self, user):
-        message = f"""
-Name: {user.get('name', 'N/A')}
-Email: {user.get('email', 'N/A')}
-Role: {user.get('role', 'N/A')}
-Status: {user.get('status', 'N/A')}
-        """
+        message = (
+            f"Name: {user.get('name', 'N/A')}\n"
+            f"Email: {user.get('email', 'N/A')}\n"
+            f"Role: {user.get('role', 'N/A')}\n"
+            f"Active: {user.get('is_active', 'N/A')}\n"
+            f"Health ID: {user.get('health_id', 'N/A')}\n"
+            f"Hospital ID: {user.get('hospital_id', 'N/A')}"
+        )
         self.show_dialog("User Details", message.strip())
     
     def show_dialog(self, title, message):

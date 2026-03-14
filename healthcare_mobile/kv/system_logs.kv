@@ -1,0 +1,13 @@
+<SystemLogsScreen>:
+    name: 'system_logs'
+
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDTopAppBar:
+            title: "System Logs"
+            left_action_items: [["arrow-left", lambda x: root.go_back()]]
+
+        MDScrollView:
+            MDList:
+                id: logs_list

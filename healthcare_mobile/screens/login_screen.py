@@ -53,10 +53,8 @@ class LoginScreen(MDScreen):
     def navigate_to_dashboard(self, role):
         if role == 'patient':
             self.manager.current = 'patient_dashboard'
-        elif role == 'hospital':
-            self.manager.current = 'hospital_dashboard'
-        elif role == 'admin':
-            self.manager.current = 'admin_dashboard'
+        else:
+            self.show_error("Access denied. This app is for patients only.")
     
     def show_error(self, message):
         if self.dialog:
@@ -74,4 +72,4 @@ class LoginScreen(MDScreen):
         self.dialog.open()
     
     def go_to_register(self):
-        self.manager.current = 'register'
+        pass  # Registration handled at hospital

@@ -6,12 +6,6 @@ from screens.login_screen import LoginScreen
 from screens.patient.dashboard import PatientDashboardScreen
 from screens.patient.records import PatientRecordsScreen
 from screens.patient.health_card import HealthCardScreen
-from screens.hospital.dashboard import HospitalDashboardScreen
-from screens.hospital.add_record import AddRecordScreen
-from screens.hospital.register_patient import RegisterPatientScreen
-from screens.admin.dashboard import AdminDashboardScreen
-from screens.admin.user_management import UserManagementScreen
-from screens.admin.hospital_management import HospitalManagementScreen
 import os
 
 # Set window size for desktop testing (comment out for mobile)
@@ -31,26 +25,20 @@ class HealthcareApp(MDApp):
         self.title = "Healthcare Blockchain"
         self.icon = "assets/images/logo.png" if os.path.exists("assets/images/logo.png") else ""
         
-        # Load KV files
+        # Load only patient KV files
+        patient_kvs = ['login_screen.kv', 'patient_dashboard.kv', 'patient_records.kv', 'health_card.kv']
         kv_path = os.path.join(os.path.dirname(__file__), 'kv')
-        for kv_file in os.listdir(kv_path):
-            if kv_file.endswith('.kv'):
-                Builder.load_file(os.path.join(kv_path, kv_file))
+        for kv_file in patient_kvs:
+            Builder.load_file(os.path.join(kv_path, kv_file))
         
         # Create screen manager
         sm = ScreenManager()
         
-        # Add screens
+        # Patient-only screens
         sm.add_widget(LoginScreen(name='login'))
         sm.add_widget(PatientDashboardScreen(name='patient_dashboard'))
         sm.add_widget(PatientRecordsScreen(name='patient_records'))
         sm.add_widget(HealthCardScreen(name='health_card'))
-        sm.add_widget(HospitalDashboardScreen(name='hospital_dashboard'))
-        sm.add_widget(AddRecordScreen(name='add_record'))
-        sm.add_widget(RegisterPatientScreen(name='register_patient'))
-        sm.add_widget(AdminDashboardScreen(name='admin_dashboard'))
-        sm.add_widget(UserManagementScreen(name='user_management'))
-        sm.add_widget(HospitalManagementScreen(name='hospital_management'))
         
         return sm
 
